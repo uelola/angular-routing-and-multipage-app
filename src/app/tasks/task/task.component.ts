@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 
 import { type Task } from './task.model';
 import { CardComponent } from '../../shared/card/card.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TasksService } from '../tasks.service';
 
 @Component({
@@ -15,8 +16,16 @@ import { TasksService } from '../tasks.service';
 export class TaskComponent {
   task = input.required<Task>();
   private tasksService = inject(TasksService);
+  // programatic navigation to update UI after removing a Task
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   onComplete() {
     this.tasksService.removeTask(this.task().id);
+    this.router.navigate(['./'], {
+      relativeTo: this.activatedRoute,
+      onSameUrlNavigation: 'reload',
+      queryParamsHandling: 'preserve',
+    });
   }
 }
